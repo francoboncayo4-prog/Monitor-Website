@@ -1,0 +1,83 @@
+/* ===== Vibrant Dashboard Styles ===== */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #1e88e5; /* Bold blue */
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #fb8c00; /* Orange */
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1.1em;
+    margin: 5px 0;
+}
+
+span {
+    font-weight: bold;
+    color: #43a047; /* Green for values */
+}
+
+/* Chart container */
+canvas {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+/* Section cards for grouping */
+section {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Live data panel */
+#live-data {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+#live-data p {
+    background-color: #e3f2fd; /* Light blue */
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+/* Hover effects */
+#live-data p:hover {
+    background-color: #bbdefb;
+    transform: scale(1.05);
+    transition: 0.3s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    #live-data {
+        flex-direction: column;
+        align-items: center;
+    }
+}

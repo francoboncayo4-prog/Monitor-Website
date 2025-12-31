@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ESP32 Sensor Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>ESP32 Sensor Dashboard</h1>
+
+  <!-- Live Data Section -->
+  <section id="live-data">
+    <h2>Live Data</h2>
+    <p>Temperature: <span id="temp">0</span> °C</p>
+    <p>Humidity: <span id="hum">0</span> %</p>
+    <p>Light: <span id="lux">0</span> lux</p>
+    <p>UV: <span id="uv">0</span> V</p>
+  </section>
+
+  <!-- Hourly Summary Section -->
+  <section>
+    <h2>Hourly Summary Chart</h2>
+    <canvas id="hourlyChart" width="800" height="400"></canvas>
+  </section>
+
+  <!-- Daily Summary Section -->
+  <section>
+    <h2>Daily Summary Chart</h2>
+    <canvas id="dailyChart" width="800" height="400"></canvas>
+  </section>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyARqj0_tnZoO5YDAVPxQeMh5KhhECo8J38",
+      databaseURL: "https://virtual-esp32-monitor-2dbca-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Update live data
+    db.ref("/live").on("value", snapshot => {
+      const data = snapshot.val();
+      if (data) {
+        document.getElementById("temp").textContent = data.temperature.toFixed(1);
+        document.getElementById("hum").textContent = data.humidity.toFixed(1);
+        document.getElementById("lux").textContent = data.light.toFixed(1);
+        document.getElementById("uv").textContent = data.uv.toFixed(2);
+      }
+    });
+
+    // Chart setup function
+    function createChart(ctx, xLabel) {
+      return new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [
+            { label: "Temp (°C)", data: [], borderColor: "red", fill: false },
+            { label: "Hum (%)", data: [], borderColor: "blue", fill: false },
+            { label: "Light", data: [], borderColor: "orange", fill: false },
+            { label: "UV", data: [], borderColor: "green", fill: false }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: { 
+            x: { title: { display: true, text: xLabel } },
+            y: { beginAtZero: true } 
+          }
+        }
+      });
+    }
+
+    const hourlyChart = createChart(document.getElementById("hourlyChart").getContext("2d"), "Hour");
+    const dailyChart = createChart(document.getElementById("dailyChart").getContext("2d"), "Day");
+
+    // Update chart data
+    function updateChart(chart, labels, temp, hum, lux, uv) {
+      chart.data.labels = labels;
+      chart.data.datasets[0].data = temp;
+      chart.data.datasets[1].data = hum;
+      chart.data.datasets[2].data = lux;
+      chart.data.datasets[3].data = uv;
+      chart.update();
+    }
+
+    // Fetch hourly summary
+    db.ref("/summary/hourly").on("value", snapshot => {
+      const data = snapshot.val();
+      if (!data) return;
+      const labels = [], tempData = [], humData = [], luxData = [], uvData = [];
+      for (const year in data) {
+        for (const month in data[year]) {
+          for (const day in data[year][month]) {
+            for (const hour in data[year][month][day]) {
+              const item = data[year][month][day][hour];
+              labels.push(`${day}/${month} ${hour}h`);
+              tempData.push(item.temperature);
+              humData.push(item.humidity);
+              luxData.push(item.light);
+              uvData.push(item.uv);
+            }
+          }
+        }
+      }
+      updateChart(hourlyChart, labels, tempData, humData, luxData, uvData);
+    });
+
+    // Fetch daily summary
+    db.ref("/summary/daily").on("value", snapshot => {
+      const data = snapshot.val();
+      if (!data) return;
+      const labels = [], tempData = [], humData = [], luxData = [], uvData = [];
+      for (const year in data) {
+        for (const month in data[year]) {
+          for (const day in data[year][month]) {
+            const item = data[year][month][day];
+            labels.push(`${day}/${month}`);
+            tempData.push(item.temperature);
+            humData.push(item.humidity);
+            luxData.push(item.light);
+            uvData.push(item.uv);
+          }
+        }
+      }
+      updateChart(dailyChart, labels, tempData, humData, luxData, uvData);
+    });
+  </script>
+</body>
+</html>
