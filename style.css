@@ -1,83 +1,54 @@
-/* ===== Vibrant Dashboard Styles ===== */
-
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f6f8;
-    color: #333;
-    margin: 0;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #0f172a;
+  color: #e5e7eb;
 }
 
-h1 {
-    text-align: center;
-    color: #1e88e5; /* Bold blue */
-    margin-bottom: 20px;
+header {
+  background: #020617;
+  padding: 15px;
+  text-align: center;
 }
 
-h2 {
-    color: #fb8c00; /* Orange */
-    margin-top: 30px;
-    margin-bottom: 10px;
+nav button {
+  margin: 5px;
+  padding: 10px 18px;
+  background: #2563eb;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-p {
-    font-size: 1.1em;
-    margin: 5px 0;
+nav button:hover {
+  background: #1e40af;
 }
 
-span {
-    font-weight: bold;
-    color: #43a047; /* Green for values */
+.section {
+  padding: 20px;
 }
 
-/* Chart container */
+.hidden {
+  display: none;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px;
+}
+
 canvas {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 10px;
-    margin-bottom: 30px;
-}
-
-/* Section cards for grouping */
-section {
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Live data panel */
-#live-data {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-#live-data p {
-    background-color: #e3f2fd; /* Light blue */
-    padding: 10px 15px;
-    border-radius: 10px;
-    margin: 5px;
-}
-
-/* Hover effects */
-#live-data p:hover {
-    background-color: #bbdefb;
-    transform: scale(1.05);
-    transition: 0.3s ease-in-out;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    canvas {
-        width: 100% !important;
-        height: auto !important;
-    }
-
-    #live-data {
-        flex-direction: column;
-        align-items: center;
-    }
+  max-width: 100%;
+  background: white;
+  border-radius: 8px;
 }
