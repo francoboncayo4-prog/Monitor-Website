@@ -1,82 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ESP32 Firebase Dashboard</title>
+  <meta charset="UTF-8" />
+  <title>Environment Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
 
-  <!-- Chart -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <link rel="stylesheet" href="style.css">
+  <!-- Firebase v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
+
 <body>
+<div class="app">
 
-  <header>
-    <h1>ESP32 Sensor Dashboard</h1>
-    <nav>
-      <button onclick="showSection('live')">Live</button>
-      <button onclick="showSection('hourly')">Hourly</button>
-      <button onclick="showSection('daily')">Daily</button>
-      <button onclick="showSection('history')">History</button>
-    </nav>
-  </header>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>Env Monitor</h2>
+    <button class="nav-btn active" data-tab="live">Live</button>
+    <button class="nav-btn" data-tab="hourly">Hourly</button>
+    <button class="nav-btn" data-tab="daily">Daily</button>
+    <button class="nav-btn" data-tab="history">History</button>
+    <button class="nav-btn" data-tab="alerts">Alerts</button>
 
-  <!-- LIVE DATA -->
-  <section id="live" class="section">
-    <h2>Live Sensor Data</h2>
-    <div class="cards">
-      <div class="card">🌡 Temp: <span id="temp">--</span> °C</div>
-      <div class="card">💧 Humidity: <span id="hum">--</span> %</div>
-      <div class="card">💡 Light: <span id="lux">--</span> lux</div>
-      <div class="card">☀️ UV: <span id="uv">--</span></div>
-    </div>
-  </section>
+    <hr>
 
-  <!-- HOURLY -->
-  <section id="hourly" class="section hidden">
-    <h2>Hourly Average</h2>
-    <canvas id="hourlyChart"></canvas>
-  </section>
+    <button id="startSim">Start Simulation</button>
+    <button id="stopSim">Stop Simulation</button>
+  </aside>
 
-  <!-- DAILY -->
-  <section id="daily" class="section hidden">
-    <h2>Daily Average</h2>
-    <canvas id="dailyChart"></canvas>
-  </section>
+  <!-- MAIN CONTENT -->
+  <main class="content">
 
-  <!-- HISTORY -->
-  <section id="history" class="section hidden">
-    <h2>History Logs</h2>
-    <ul id="historyList"></ul>
-  </section>
+    <!-- LIVE -->
+    <section id="live" class="tab active-tab">
+      <h1>Live Sensors</h1>
+      <div class="cards">
+        <div class="card"><h3>Temp</h3><span id="live-temp">--</span></div>
+        <div class="card"><h3>Humidity</h3><span id="live-hum">--</span></div>
+        <div class="card"><h3>UV</h3><span id="live-uv">--</span></div>
+        <div class="card"><h3>Light</h3><span id="live-light">--</span></div>
+      </div>
+      <canvas id="liveChart"></canvas>
+    </section>
 
-  <script src="script.js"></script>
-</body>
-</html>    });
+    <!-- HOURLY -->
+    <section id="hourly" class="tab">
+      <h1>Hourly Averages</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Hour</th><th>Temp</th><th>Hum</th><th>UV</th><th>Light</th>
+          </tr>
+        </thead>
+        <tbody id="hourly-table"></tbody>
+      </table>
+    </section>
 
-    // Fetch daily summary
-    db.ref("/summary/daily").on("value", snapshot => {
-      const data = snapshot.val();
-      if (!data) return;
-      const labels = [], tempData = [], humData = [], luxData = [], uvData = [];
-      for (const year in data) {
-        for (const month in data[year]) {
-          for (const day in data[year][month]) {
-            const item = data[year][month][day];
-            labels.push(`${day}/${month}`);
-            tempData.push(item.temperature);
-            humData.push(item.humidity);
-            luxData.push(item.light);
-            uvData.push(item.uv);
-          }
-        }
-      }
-      updateChart(dailyChart, labels, tempData, humData, luxData, uvData);
-    });
-  </script>
+    <!-- DAILY -->
+    <section id="daily" class="tab">
+      <h1>Daily Summary</h1>
+      <div id="daily-list"></div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="history" class="tab">
+      <h1>History</h1>
+      <canvas id="historyChart"></canvas>
+    </section>
+
+    <!-- ALERTS -->
+    <section id="alerts" class="tab">
+      <h1>Alerts</h1>
+      <div id="alerts-list">No alerts</div>
+    </section>
+
+  </main>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
